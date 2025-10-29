@@ -10,7 +10,7 @@ import datetime as dt
 parser = argparse.ArgumentParser()
 
 parser.add_argument('command', help='The action to execute, either mensaplan or blackboard', type=str)
-parser.add_argument('-m', '--markdown', help='Format the output as markdown', action='store_true')
+parser.add_argument('-m', '--markdown', help='Format the output as markdown. Images are embedded via their URLs using html.', action='store_true')
 parser.add_argument('-d', '--weekday', help='Only retrieves plan of DAY (mensaplan only)', metavar='DAY', type=str)
 parser.add_argument('-w', '--calendar_week', help='Retrieves plan for calendar week WEEK (mensaplan only). \
                                                    This may result in empty output if the week is in the past or too far into the future.', metavar='WEEK', type=int)

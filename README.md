@@ -24,6 +24,7 @@ python3 oth_tool.py m -m```
 This also supports a few aliases.
 
 ### Options
+- `-m` prints the output as markdown and embeds links to the images
 - `-d` day of the week (e.g. monday/montag, dienstag, ...)
 - `-w` calendar week to view
 - `-t` print today's mensaplan
