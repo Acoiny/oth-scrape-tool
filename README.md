@@ -11,6 +11,7 @@ python3 oth_tool.py black
 # print as markdown
 python3 oth_tool.py b -m
 ```
+
 A few aliases for `blackboard` are supported.
 
 ## Mensaplan
