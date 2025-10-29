@@ -30,3 +30,6 @@ This also supports a few aliases.
 - `-t` print today's mensaplan
 
 Weekdays also support a few aliases.
+
+## Planned features
+- html output support
