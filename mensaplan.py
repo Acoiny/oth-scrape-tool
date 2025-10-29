@@ -2,13 +2,23 @@ from urllib.request import urlopen
 import csv
 import datetime as dt
 
+import requests
+
+from bs4 import BeautifulSoup
+
 class Meal:
-    def __init__(self, name: str, kennzeichnung: str, price_students: str, price_workers: str, price_guest: str) -> None:
+    def __init__(self, name: str,
+                 kennzeichnung: str,
+                 price_students: str,
+                 price_workers: str,
+                 price_guest: str,
+                 image_url: str) -> None:
         self.name = name
         self.kennzeichnung = kennzeichnung
         self.price_students = float(price_students.replace(',', '.'))
         self.price_workers = float(price_workers.replace(',', '.'))
         self.price_guest = float(price_guest.replace(',', '.'))
+        self.image_url = image_url
     def __str__(self) -> str:
         return f'{self.name} - {self.kennzeichnung}: {self.price_students:.2f}€'
 
@@ -76,6 +86,7 @@ class Mensaplan:
         if today or calendar_week == None: calendar_week = dt.date.today().isocalendar()[1]
         self.today = today
         self.url = f'https://www.stwno.de/infomax/daten-extern/csv/HS-R-tag/{calendar_week}.csv'
+        self.url_images = f'https://stwno.de/infomax/daten-extern/html/speiseplan-render.php'
         self.days: dict[str, Weekday] = {}
 
     def get(self) -> None:
@@ -94,8 +105,22 @@ class Mensaplan:
                 if day == None:
                     day = Weekday(row[0])
                     self.days[row[1]] = day
-                meal = Meal(row[3], row[4], row[6], row[7], row[8])
+                meal = Meal(row[3], row[4], row[6], row[7], row[8]) # pyright: ignore
                 day.add_meal(meal, row[2])
+
+    def get_with_images(self) -> None:
+        """
+        Fetches the current mensaplan with all it's images
+        """
+        data = {
+                "date": ASDAS,
+                "func": "make_spl",
+                "lang": "de",
+                "locId": "HS-R-tag",
+                "w": ""
+        }
+
+        res = requests.post("https://stwno.de/infomax/daten-extern/html/speiseplan-render.php", data=data)
 
 
     def to_markdown_str(self) -> str:

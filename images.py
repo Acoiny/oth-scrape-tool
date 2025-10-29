@@ -9,12 +9,19 @@ def get_image_urls(baseUrl: str, date) -> list[str]:
     res = requests.post("https://stwno.de/infomax/daten-extern/html/speiseplan-render.php", data={"date": "2025-10-29", "func": "make_spl", "lang": "de", "locId": "HS-R-tag", "w": ""}).content
 
     soup = BeautifulSoup(res.decode('utf-8'), 'html.parser')
-    imgs = soup.find_all('img')
+    #imgs = soup.find_all('img')
+    meals = soup.find_all('tr')
+    for meal in meals:
+        print('-'*50)
+        print(dir(meal['class'])) # type: ignore
+        print('-'*50)
+
+    return []
 
     urls: list[str] = []
 
     for img in imgs:
-        if "Bilder" in img['src']:
+        if "Bilder" in img['src']:  # type: ignore
             urls.append(img['src']) # type: ignore
 
     return urls
