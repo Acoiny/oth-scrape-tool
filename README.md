@@ -21,7 +21,8 @@ Receive the mensaplan for the current week (or any calendar week).
 python3 oth_tool.py mensaplan
 
 # print as markdown
-python3 oth_tool.py m -m```
+python3 oth_tool.py m -m
+```
 This also supports a few aliases.
 
 ### Options
