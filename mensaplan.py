@@ -22,7 +22,7 @@ class Meal:
 
     def to_markdown(self) -> str:
         image_format = f'<img src="{self.image_url}" width="200"/>'
-        return f'{self.name} - : {self.price_students}\n{image_format}'
+        return f'|{image_format}|{self.name}|{self.price_students}|{self.price_workers}|{self.price_guest}|'
 
 class Weekday:
     def __init__(self, datum: dt.date) -> None:
@@ -46,19 +46,28 @@ class Weekday:
             case _:
                 raise Exception(f'Unknown meal type: {meal_type}')
 
+    def get_markdown_table_header(self) -> str:
+        res  = '| Bilder | Name | Studentenpreis | Mitarbeiterpreis | Gästepreis |\n'
+        res += '|--------|------|----------------|------------------|------------|\n'
+        return res
+
     def to_markdown_str(self) -> str:
         res = '## Suppen\n'
+        res += self.get_markdown_table_header()
         for su in self.suppen:
-            res += f'- {su.to_markdown()}\n'
+            res += f'{su.to_markdown()}\n'
         res += '## Beilagen\n'
+        res += self.get_markdown_table_header()
         for vs in self.beilagen:
-            res += f'- {vs.to_markdown()}\n'
+            res += f'{vs.to_markdown()}\n'
         res += '## Hauptspeisen\n'
+        res += self.get_markdown_table_header()
         for hs in self.hauptspeisen:
-            res += f'- {hs.to_markdown()}\n'
+            res += f'{hs.to_markdown()}\n'
         res += '## Nachspeisen\n'
+        res += self.get_markdown_table_header()
         for ns in self.nachspeisen:
-            res += f'- {ns.to_markdown()}\n'
+            res += f'{ns.to_markdown()}\n'
 
         return res
 
@@ -182,7 +191,7 @@ class Mensaplan:
         for d in self.days:
             day = self.days[d]
             try:
-                res += f'# {weekdays[d.weekday()]} ({d.strftime('%d.%m.%Y')})\n'
+                res += f'# {weekdays[d.weekday()]} ({d.strftime("%d.%m.%Y")})\n'
                 res += day.to_markdown_str() + '\n'
             except Exception as e:
                 res += '> [!WARNING]\n> No mensaplan!\n'
