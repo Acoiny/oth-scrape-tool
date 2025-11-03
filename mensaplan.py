@@ -1,5 +1,3 @@
-from urllib.request import urlopen
-import csv
 import datetime as dt
 
 import requests
@@ -93,11 +91,13 @@ class Mensaplan:
     Gets the current mensaplan and handles stringifying it and
     formatting as markdown
     """
-    def __init__(self, calendar_week: int | None = None, today: bool = False) -> None:
+    def __init__(self, today: bool = False, next_week: bool = False) -> None:
 
         # if no week is specified, use the current week
-        if calendar_week == None:
-            calendar_week = dt.datetime.today().isocalendar()[1]
+        calendar_week = dt.datetime.today().isocalendar()[1]
+
+        if next_week:
+            calendar_week += 1
 
         # we get a list of all dates and cache it
         self.weekdays = self.get_weekdays(calendar_week)
