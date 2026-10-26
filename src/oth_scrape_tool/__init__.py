@@ -1,25 +1,34 @@
-#!/usr/bin/env python3
-
-from blackboard import Blackboard
-from mensaplan import Mensaplan
+from oth_scrape_tool.blackboard import Blackboard
+from oth_scrape_tool.mensaplan import Mensaplan
 
 import argparse
 
-import datetime as dt
-
 parser = argparse.ArgumentParser()
 
-parser.add_argument('command', help='The action to execute, either mensaplan or blackboard', type=str)
-parser.add_argument('-m', '--markdown', help='Format the output as markdown. Images are embedded via their URLs using html.', action='store_true')
-parser.add_argument('-d', '--weekday', help='Only retrieves plan of DAY (mensaplan only)', metavar='DAY', type=str)
-parser.add_argument('-n', '--next-week', help='Retrieves mensaplan for the coming week (mensaplan only)', action='store_true')
-parser.add_argument('-t', '--today', help='Show the mensaplan for today (mensaplan only)', action='store_true')
+parser.add_argument(
+    'command',
+    help='The action to execute, either mensaplan or blackboard', type=str)
+parser.add_argument(
+    '-m', '--markdown',
+    help='Format the output as markdown. Images are embedded via their URLs using html.',
+    action='store_true')
+parser.add_argument(
+    '-d', '--weekday',
+    help='Only retrieves plan of DAY (mensaplan only)', metavar='DAY', type=str)
+parser.add_argument(
+    '-n', '--next-week',
+    help='Retrieves mensaplan for the coming week (mensaplan only)', action='store_true')
+parser.add_argument(
+    '-t', '--today',
+    help='Show the mensaplan for today (mensaplan only)', action='store_true')
 
 args = parser.parse_args()
 
+
 def main() -> None:
     if args.command in ('blackboard', 'black', 'bl', 'b'):
-        blackboard = Blackboard('https://informatik-mathematik.oth-regensburg.de/schwarzes-brett')
+        blackboard = Blackboard(
+            'https://informatik-mathematik.oth-regensburg.de/schwarzes-brett')
         blackboard.scrape()
 
         if args.markdown:
@@ -30,7 +39,7 @@ def main() -> None:
 
         mensa = Mensaplan(args.today, args.next_week)
 
-        if args.weekday != None:
+        if args.weekday is not None:
             day = args.weekday.lower()
             if day in ('monday', 'montag', 'mo', 'm'):
                 mensa.select_single_weekday(0)
@@ -52,11 +61,4 @@ def main() -> None:
             print(mensa)
 
     else:
-        parser.exit(1,parser.format_help())
-
-if __name__ == "__main__":
-    main()
-    #url = 'https://informatik-mathematik.oth-regensburg.de/schwarzes-brett'
-    #blackboard = Blackboard(url)
-    #blackboard.scrape()
-    #print(blackboard)
+        parser.exit(1, parser.format_help())

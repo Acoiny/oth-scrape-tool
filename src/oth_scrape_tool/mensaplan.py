@@ -4,6 +4,7 @@ import requests
 
 from bs4 import BeautifulSoup
 
+
 class Meal:
     def __init__(self, name: str,
                  # kennzeichnung: str,
@@ -15,12 +16,14 @@ class Meal:
         self.price_workers = prices[1].replace(',', '.')
         self.price_guest = prices[2].replace(',', '.')
         self.image_url = image_url
+
     def __str__(self) -> str:
         return f'{self.name} - : {self.price_students}'
 
     def to_markdown(self) -> str:
         image_format = f'<img src="{self.image_url}" width="200"/>'
         return f'|{image_format}|{self.name}|{self.price_students}|{self.price_workers}|{self.price_guest}|'
+
 
 class Weekday:
     def __init__(self, datum: dt.date) -> None:
@@ -45,7 +48,7 @@ class Weekday:
                 raise Exception(f'Unknown meal type: {meal_type}')
 
     def get_markdown_table_header(self) -> str:
-        res  = '| Bilder | Name | Studentenpreis | Mitarbeiterpreis | Gästepreis |\n'
+        res = '| Bilder | Name | Studentenpreis | Mitarbeiterpreis | Gästepreis |\n'
         res += '|--------|------|----------------|------------------|------------|\n'
         return res
 
@@ -86,11 +89,13 @@ class Weekday:
 
         return res
 
+
 class Mensaplan:
     """
     Gets the current mensaplan and handles stringifying it and
     formatting as markdown
     """
+
     def __init__(self, today: bool = False, next_week: bool = False) -> None:
 
         # if no week is specified, use the current week
@@ -107,7 +112,7 @@ class Mensaplan:
 
         # if we only want today, we replace all days by the current date
         if today:
-            self.dates = [ dt.datetime.today() ]
+            self.dates = [dt.datetime.today()]
 
         self.url = 'https://stwno.de/infomax/daten-extern/html/speiseplan-render.php'
         self.days: dict[dt.date, Weekday] = {}
@@ -117,7 +122,8 @@ class Mensaplan:
         Returns all the dates of the current week
         """
         first_day_of_year = dt.date(dt.datetime.today().year, 1, 1)
-        first_monday = first_day_of_year + dt.timedelta(weeks=week - 1, days=-first_day_of_year.weekday())
+        first_monday = first_day_of_year + \
+            dt.timedelta(weeks=week - 1, days=-first_day_of_year.weekday())
         # count from monday to friday
         weekdays = [first_monday + dt.timedelta(days=i) for i in range(5)]
         return weekdays
@@ -126,7 +132,7 @@ class Mensaplan:
         """
         Adds another day to request the mensaplan for
         """
-        self.dates = [ self.weekdays[day] ]
+        self.dates = [self.weekdays[day]]
 
     def get(self) -> None:
         """
@@ -140,11 +146,11 @@ class Mensaplan:
         Fetches the selected day's mensaplan with all it's images
         """
         data = {
-                "date": date.strftime('%Y-%m-%d'),
-                "func": "make_spl",
-                "lang": "de",
-                "locId": "HS-R-tag",
-                "w": ""
+            "date": date.strftime('%Y-%m-%d'),
+            "func": "make_spl",
+            "lang": "de",
+            "locId": "HS-R-tag",
+            "w": ""
         }
 
         # get the base url for images
@@ -163,19 +169,21 @@ class Mensaplan:
 
         for header in headers:
             cl = header.attrs.get('class')
-            if not cl: continue
+            if not cl:
+                continue
 
             if 'gruppenkopf' in cl:
-                current_meal_type = header.find('td').get_text() # type: ignore
+                current_meal_type = header.find(
+                    'td').get_text()  # type: ignore
             if 'essenzeile' in cl:
                 contents = header.find_all('td')
-                preise: list = [ el.get_text() for el in header.find_all('td', class_='preis') ]
+                preise: list = [el.get_text()
+                                for el in header.find_all('td', class_='preis')]
                 name = contents[1].get_text()
                 img_url: str = ''
                 if img := contents[0].find('img'):
-                    img_url = base_url + img['src'] # type: ignore
+                    img_url = base_url + img['src']  # type: ignore
                 day.add_meal(Meal(name, preise, img_url), current_meal_type)
-
 
     def to_markdown_str(self) -> str:
         res = ''
@@ -191,7 +199,8 @@ class Mensaplan:
         for d in self.days:
             day = self.days[d]
             try:
-                res += f'# {weekdays[d.weekday()]} ({d.strftime("%d.%m.%Y")})\n'
+                res += f'# {weekdays[d.weekday()]
+                            } ({d.strftime("%d.%m.%Y")})\n'
                 res += day.to_markdown_str() + '\n'
             except Exception as e:
                 res += '> [!WARNING]\n> No mensaplan!\n'
@@ -213,6 +222,7 @@ class Mensaplan:
             res += f'{weekdays[day.weekday()]}:\n'
             res += str(self.days[day]) + '\n'
         return res
+
 
 if __name__ == '__main__':
     m = Mensaplan(today=True)
