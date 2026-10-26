@@ -10,6 +10,7 @@ requires-python = ">=3.14"
 dependencies = [
     "bs4>=0.0.2",
     "requests>=2.34.2",
+    "term-image",
 ]
 
 [project.scripts]
@@ -18,3 +19,6 @@ oth-scrape-tool = "oth_scrape_tool:main"
 [build-system]
 requires = ["uv_build>=0.13.5,<0.14.0"]
 build-backend = "uv_build"
+
+[tool.uv.sources]
+term-image = { git = "https://github.com/AnonymouX47/term-image.git" }

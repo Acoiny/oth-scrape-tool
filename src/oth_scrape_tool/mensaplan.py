@@ -4,6 +4,8 @@ import requests
 
 from bs4 import BeautifulSoup
 
+from term_image.image import from_url
+
 
 class Meal:
     def __init__(self, name: str,
@@ -23,6 +25,16 @@ class Meal:
     def to_markdown(self) -> str:
         image_format = f'<img src="{self.image_url}" width="200"/>'
         return f'|{image_format}|{self.name}|{self.price_students}|{self.price_workers}|{self.price_guest}|'
+
+    def to_kitty_protocol(self) -> str:
+        if self.image_url:
+            img = from_url(self.image_url)
+            img.height = 10
+            img = f'{img:<.^10}'
+        else:
+            img = ''
+
+        return f'{img}\n {self.name} - {self.price_students}'
 
 
 class Weekday:
@@ -69,6 +81,23 @@ class Weekday:
         res += self.get_markdown_table_header()
         for ns in self.nachspeisen:
             res += f'{ns.to_markdown()}\n'
+
+        return res
+
+    def to_kitty_protocol(self) -> str:
+        res = '    Suppen:\n'
+
+        for su in self.suppen:
+            res += f'       - {su.to_kitty_protocol()}\n'
+        res += '    Beilagen:\n'
+        for vs in self.beilagen:
+            res += f'       - {vs.to_kitty_protocol()}\n'
+        res += '    Hauptspeisen:\n'
+        for hs in self.hauptspeisen:
+            res += f'       - {hs.to_kitty_protocol()}\n'
+        res += '    Nachspeisen:\n'
+        for ns in self.nachspeisen:
+            res += f'       - {ns.to_kitty_protocol()}\n'
 
         return res
 
@@ -161,7 +190,7 @@ class Mensaplan:
         headers = soup.find_all('tr')
 
         day = self.days.get(date)
-        if day == None:
+        if day is None:
             day = Weekday(date)
             self.days[date] = day
 
@@ -205,6 +234,22 @@ class Mensaplan:
             except Exception as e:
                 res += '> [!WARNING]\n> No mensaplan!\n'
 
+        return res
+
+    def to_kitty_protocol(self) -> str:
+        res = ''
+        weekdays = [
+            'Montag',
+            'Dienstag',
+            'Mittwoch',
+            'Donnerstag',
+            'Freitag',
+            'Samstag',
+            'Sonntag'
+        ]
+        for day in self.days:
+            res += f'{weekdays[day.weekday()]}:\n'
+            res += str(self.days[day].to_kitty_protocol()) + '\n'
         return res
 
     def __str__(self) -> str:

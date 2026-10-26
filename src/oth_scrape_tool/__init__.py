@@ -58,7 +58,7 @@ def main() -> None:
         if args.markdown:
             print(mensa.to_markdown_str())
         else:
-            print(mensa)
+            print(mensa.to_kitty_protocol())
 
     else:
         parser.exit(1, parser.format_help())
