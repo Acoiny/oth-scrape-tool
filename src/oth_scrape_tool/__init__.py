@@ -46,13 +46,13 @@ def main() -> None:
             if day in ('monday', 'montag', 'mo', 'm'):
                 mensa.select_single_weekday(0)
             elif day in ('tuesday', 'dienstag', 'tu', 'di'):
-                mensa.select_single_weekday(0)
+                mensa.select_single_weekday(1)
             elif day in ('wednesday', 'mittwoch', 'wed', 'mi', 'w', 'm'):
-                mensa.select_single_weekday(0)
+                mensa.select_single_weekday(2)
             elif day in ('thursday', 'donnerstag', 'th', 'do'):
-                mensa.select_single_weekday(0)
+                mensa.select_single_weekday(3)
             elif day in ('friday', 'freitag', 'fr', 'f'):
-                mensa.select_single_weekday(0)
+                mensa.select_single_weekday(4)
             else:
                 parser.exit(1, f'Invalid weekday "{args.weekday}"\n')
 
