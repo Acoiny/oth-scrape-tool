@@ -34,7 +34,7 @@ class Meal:
         else:
             img = ''
 
-        return f'{img}\n {self.name} - {self.price_students}'
+        return f'{img}\n- {self.name} - {self.price_students}'
 
 
 class Weekday:
@@ -85,19 +85,19 @@ class Weekday:
         return res
 
     def to_kitty_protocol(self) -> str:
-        res = '    Suppen:\n'
+        res = 'Suppen:\n'
 
         for su in self.suppen:
-            res += f'       - {su.to_kitty_protocol()}\n'
-        res += '    Beilagen:\n'
+            res += f'{su.to_kitty_protocol()}\n'
+        res += '\nBeilagen:\n'
         for vs in self.beilagen:
-            res += f'       - {vs.to_kitty_protocol()}\n'
-        res += '    Hauptspeisen:\n'
+            res += f'{vs.to_kitty_protocol()}\n'
+        res += '\nHauptspeisen:\n'
         for hs in self.hauptspeisen:
-            res += f'       - {hs.to_kitty_protocol()}\n'
-        res += '    Nachspeisen:\n'
+            res += f'{hs.to_kitty_protocol()}\n'
+        res += '\nNachspeisen:\n'
         for ns in self.nachspeisen:
-            res += f'       - {ns.to_kitty_protocol()}\n'
+            res += f'{ns.to_kitty_protocol()}\n'
 
         return res
 
