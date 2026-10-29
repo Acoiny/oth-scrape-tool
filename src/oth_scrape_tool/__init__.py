@@ -21,6 +21,8 @@ parser.add_argument(
 parser.add_argument(
     '-t', '--today',
     help='Show the mensaplan for today (mensaplan only)', action='store_true')
+parser.add_argument(
+    '-i', '--images', help='Show images for the mensaplan', action='store_true')
 
 args = parser.parse_args()
 
@@ -57,8 +59,10 @@ def main() -> None:
         mensa.get()
         if args.markdown:
             print(mensa.to_markdown_str())
-        else:
+        elif args.images:
             print(mensa.to_kitty_protocol())
+        else:
+            print(mensa)
 
     else:
         parser.exit(1, parser.format_help())
