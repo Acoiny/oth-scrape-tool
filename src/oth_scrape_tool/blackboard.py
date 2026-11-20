@@ -14,10 +14,10 @@ class BlackbordEntry:
         self.content = content
 
     def __str__(self) -> str:
-        return f'{self.title}\n{self.published_at} {self.content}'
+        return f"{self.title}\n{self.published_at} {self.content}"
 
     def to_markdown(self) -> str:
-        return f'## {self.title}\n**{self.published_at}** {self.content}'
+        return f"## {self.title}\n**{self.published_at}** {self.content}"
 
 
 class Blackboard:
@@ -42,20 +42,18 @@ class Blackboard:
         # headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
         response = requests.get(self.url)
         response.raise_for_status()  # Check for HTTP errors
-        soup = BeautifulSoup(response.text, 'html.parser')
-        entries = soup.find_all('div', class_='header')
-        more_links = soup.find_all('a', class_='more')
+        soup = BeautifulSoup(response.text, "html.parser")
+        entries = soup.find_all("div", class_="header")
+        more_links = soup.find_all("a", class_="more")
 
         for header, more_url in zip(entries, more_links, strict=True):
             header_text = header.get_text(strip=True)
 
-            complete_url = self.url[:self.url.rfind(
-                '/')] + more_url['href']  # type: ignore
+            complete_url = self.url[: self.url.rfind("/")] + more_url["href"]  # type: ignore
 
             creation_date, content = self.scrape_contents(complete_url)
 
-            self.entries.append(BlackbordEntry(
-                header_text, creation_date, content))
+            self.entries.append(BlackbordEntry(header_text, creation_date, content))
 
     def scrape_contents(self, url: str) -> tuple[str, str]:
         """
@@ -68,31 +66,34 @@ class Blackboard:
         """
         res = requests.get(url)
         res.raise_for_status()  # Check for HTTP errors
-        soup = BeautifulSoup(res.text, 'html.parser')
+        soup = BeautifulSoup(res.text, "html.parser")
 
         # find the time of creation
-        time = soup.find('time', itemprop='datePublished')
+        time = soup.find("time", itemprop="datePublished")
         # Find the content in the page
-        content = soup.find('span', itemprop='description')
+        content = soup.find("span", itemprop="description")
 
         if content:
             # type: ignore
             return time.get_text(strip=True), content.get_text(strip=True)
         else:
-            raise ValueError(f"No content found at {
-                             url}. The structure of the page may have changed.")
+            raise ValueError(
+                f"No content found at {
+                    url
+                }. The structure of the page may have changed."
+            )
 
     def __str__(self) -> str:
-        res = ''
+        res = ""
         for entry in self.entries:
-            res += f'{entry}\n'
+            res += f"{entry}\n"
         return res
 
     def to_markdown_str(self) -> str:
         """
         Converts the blackboard to a markdown string
         """
-        res = ''
+        res = ""
         for entry in self.entries:
-            res += entry.to_markdown() + '\n'
+            res += entry.to_markdown() + "\n"
         return res
